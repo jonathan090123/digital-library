@@ -9,9 +9,8 @@ class LibraryController extends Controller
 {
    public function index(Request $request)
 {
-    $query = Book::with(['category', 'author'])
-                ->withAvg('ratings', 'rating');
-
+    $query = Book::with(['category', 'author']);
+               
     if ($request->has('search')) {
         $search = $request->search;
         $query->where('title', 'like', "%{$search}%");
@@ -19,6 +18,6 @@ class LibraryController extends Controller
 
     $books = $query->get();
 
-    return view('library.index', compact('books'));
+    return view('user.index', compact('books'));
 }
 }
