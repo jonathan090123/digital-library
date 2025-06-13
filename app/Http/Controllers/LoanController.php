@@ -11,30 +11,25 @@ class LoanController extends Controller
 {
     public function borrow(Request $request, $bookId)
 {
-    $request->validate([
-        'quantity' => 'required|integer|min:1',
-    ]);
-
+   
     $book = Book::findOrFail($bookId);
 
-    if ($book->stock < $request->quantity) {
+    if ($book->stock < 1) {
         return back()->with('error', 'Stok tidak mencukupi!');
     }
 
     // Buat peminjaman
     Loan::create([
-        'user_id' => auth()->id(),
+        'user_id' => Auth::id(),
         'book_id' => $book->id,
-        'quantity' => $request->quantity,
         'is_returned' => false,
     ]);
 
     // Kurangi stok buku
-    $book->decrement('stock', $request->quantity);
+    $book->decrement('stock');
 
     return redirect()->route('dashboard')->with('success', 'Buku berhasil dipinjam!');
 }
-
 
     public function return(Book $book)
     {
